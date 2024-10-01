@@ -11,12 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-
+  private static final String ID = "id";
+  private static final String DELETED = "deleted";
   private final EmployeeRepository employeeRepository;
   private final EmployeeMapper employeeMapper;
 
@@ -48,5 +50,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     EmployeeResponseDto responseDto = employeeMapper.toDto(entity.get());
     log.trace("Response [{}]",responseDto);
     return responseDto;
+  }
+
+  @Override
+  public Map<String, Object> removeEmployeeById(String id) {
+    log.trace("Inside removeEmployeeById Method.");
+    Optional<Employee> entity = employeeRepository.findById(id);
+    if (entity.isEmpty()) {
+      throw new EmployeeNotFound(String.format("Employee with [%s] id not exist",id));
+    }
+    entity.get().setDeleted(Boolean.TRUE);
+    Employee saved = employeeRepository.save(entity.get());
+    log.trace("After saved [{}]",saved);
+    return Map.of(ID,id,DELETED,saved.isDeleted());
   }
 }
