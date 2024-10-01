@@ -1,9 +1,11 @@
 package com.poc.couchbase.controller;
 
 import com.poc.couchbase.dto.request.CreateEmployeeDto;
+import com.poc.couchbase.dto.request.UpdateEmployeeDto;
 import com.poc.couchbase.dto.response.EmployeeResponseDto;
 import com.poc.couchbase.dto.response.Response;
 import com.poc.couchbase.services.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +23,7 @@ public class EmployeeController {
   public EmployeeController(EmployeeService employeeService) {this.employeeService = employeeService;}
 
   @PostMapping("/create")
-  public ResponseEntity<Response> createEmployee(@RequestBody CreateEmployeeDto createEmployeeDto) {
+  public ResponseEntity<Response> createEmployee(@Valid @RequestBody final CreateEmployeeDto createEmployeeDto) {
     EmployeeResponseDto responseDto = employeeService.createEmployee(createEmployeeDto);
     return ResponseEntity
             .status(HttpStatus.CREATED)
@@ -44,6 +46,20 @@ public class EmployeeController {
                     .status(HttpStatus.OK)
                     .statusCode(HttpStatus.OK.value())
                     .message("Employee found.")
+                    .data(Map.of(DATA, responseDto))
+                    .build());
+  }
+
+  @PutMapping("/update")
+  public ResponseEntity<Response> update(@Valid @RequestBody final UpdateEmployeeDto updateEmployeeDto) {
+    EmployeeResponseDto responseDto = employeeService.updateEmployee(updateEmployeeDto);
+    return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(Response
+                    .builder()
+                    .status(HttpStatus.OK)
+                    .statusCode(HttpStatus.OK.value())
+                    .message("Employee updated.")
                     .data(Map.of(DATA, responseDto))
                     .build());
   }

@@ -1,6 +1,7 @@
 package com.poc.couchbase.services.impl;
 
 import com.poc.couchbase.dto.request.CreateEmployeeDto;
+import com.poc.couchbase.dto.request.UpdateEmployeeDto;
 import com.poc.couchbase.dto.response.EmployeeResponseDto;
 import com.poc.couchbase.exceptions.EmployeeNotFound;
 import com.poc.couchbase.mappers.EmployeeMapper;
@@ -63,5 +64,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     Employee saved = employeeRepository.save(entity.get());
     log.trace("After saved [{}]",saved);
     return Map.of(ID,id,DELETED,saved.isDeleted());
+  }
+
+  @Override
+  public EmployeeResponseDto updateEmployee(UpdateEmployeeDto updateEmployeeDto) {
+    log.trace("Inside updateEmployee Method.");
+    Optional<Employee> entity = employeeRepository.findById(updateEmployeeDto.getId());
+    if (entity.isEmpty()) {
+      throw new EmployeeNotFound(String.format("Employee with [%s] id not exist",updateEmployeeDto.getId()));
+    }
+    log.trace("Updating employee entity.");
+    Employee updateEntity = employeeMapper.updateEntity(updateEmployeeDto, entity.get());
+    log.trace("Updated employee entity [{}]", updateEntity);
+    return employeeMapper.toDto(updateEntity);
   }
 }
