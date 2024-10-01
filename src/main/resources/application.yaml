@@ -1,8 +1,20 @@
 server:
   port: 1024
+  servlet:
+    context-path: /poc-couchbase
 spring:
   application:
     name: POC-COUCHBASE
   output:
     ansi:
       enabled: ALWAYS
+  data:
+    couchbase:
+      auto-index: true
+
+logging:
+  level:
+    com:
+      poc:
+        couchbase: TRACE
+

@@ -6,9 +6,10 @@ import com.poc.couchbase.mappers.EmployeeMapper;
 import com.poc.couchbase.models.Employee;
 import com.poc.couchbase.repository.EmployeeRepository;
 import com.poc.couchbase.services.EmployeeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+@Slf4j
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
@@ -23,8 +24,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
   @Override
   public EmployeeResponseDto createEmployee(CreateEmployeeDto createEmployeeDto) {
+    log.trace("Inside createEmployee Method.");
     Employee entity = employeeMapper.toEntity(createEmployeeDto);
+    log.trace("After toEntity [{}]",entity);
     Employee savedEmployee = employeeRepository.save(entity);
-    return employeeMapper.toDto(savedEmployee);
+    log.trace("After save [{}]",savedEmployee);
+    EmployeeResponseDto responseDto = employeeMapper.toDto(savedEmployee);
+    log.trace("After toDto [{}]",responseDto);
+    return responseDto;
   }
 }

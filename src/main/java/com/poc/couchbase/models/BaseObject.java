@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.couchbase.core.index.QueryIndexed;
 
 import java.util.Date;
 import java.util.Map;
@@ -32,6 +33,7 @@ public class BaseObject {
    * UTC time-stamp of the Create Date in case of CRUD operations.
    */
   @CreatedDate
+  @QueryIndexed
   private Date createdOn;
 
   /**
@@ -43,12 +45,14 @@ public class BaseObject {
   /**
    * @implNote the status of object whether active or inactive.
    */
+  @QueryIndexed
   private boolean inactive;
 
   /**
    * @implNote - Soft Deletion flag. It may require to just execute soft delete instead of physical
    * delete operation. This flag indicates whether the object/document is deleted or not.
    */
+  @QueryIndexed
   private boolean deleted;
 
   /**
