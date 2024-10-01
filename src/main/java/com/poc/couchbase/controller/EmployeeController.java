@@ -6,10 +6,7 @@ import com.poc.couchbase.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -24,6 +21,14 @@ public class EmployeeController {
     EmployeeResponseDto responseDto = employeeService.createEmployee(createEmployeeDto);
     return ResponseEntity
             .status(HttpStatus.CREATED)
+            .body(responseDto);
+  }
+
+  @PostMapping("/findById/{id}")
+  public ResponseEntity<EmployeeResponseDto> findById(@PathVariable(name = "id") final String id) {
+    EmployeeResponseDto responseDto = employeeService.findEmployeeById(id);
+    return ResponseEntity
+            .status(HttpStatus.OK)
             .body(responseDto);
   }
 }

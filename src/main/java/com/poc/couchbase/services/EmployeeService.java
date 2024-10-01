@@ -6,4 +6,6 @@ import com.poc.couchbase.dto.response.EmployeeResponseDto;
 public interface EmployeeService {
 
   EmployeeResponseDto createEmployee(CreateEmployeeDto employee);
+
+  EmployeeResponseDto findEmployeeById(String id);
 }
