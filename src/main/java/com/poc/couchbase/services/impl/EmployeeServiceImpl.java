@@ -3,6 +3,7 @@ package com.poc.couchbase.services.impl;
 import com.poc.couchbase.dto.request.CreateEmployeeDto;
 import com.poc.couchbase.dto.request.UpdateEmployeeDto;
 import com.poc.couchbase.dto.response.EmployeeResponseDto;
+import com.poc.couchbase.exceptions.EmployeeAlreadyCreatedException;
 import com.poc.couchbase.exceptions.EmployeeNotFound;
 import com.poc.couchbase.mappers.EmployeeMapper;
 import com.poc.couchbase.models.Employee;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,6 +34,15 @@ public class EmployeeServiceImpl implements EmployeeService {
   @Override
   public EmployeeResponseDto createEmployee(CreateEmployeeDto createEmployeeDto) {
     log.trace("Inside createEmployee Method.");
+    log.trace("Check email and phoneNumber present.");
+    List<Employee> byEmailAndPhoneNumberExits = employeeRepository.findByEmailAndPhoneNumber(createEmployeeDto.getEmail(),
+            createEmployeeDto.getPhoneNumber());
+    log.trace("Employee exists with email and phone [{}]", byEmailAndPhoneNumberExits);
+    if(!byEmailAndPhoneNumberExits.isEmpty())
+    {
+      throw new EmployeeAlreadyCreatedException(String.format("Email [%s] and Phone number [%s] already exists",
+              createEmployeeDto.getEmail(),createEmployeeDto.getPhoneNumber()));
+    }
     Employee entity = employeeMapper.toEntity(createEmployeeDto);
     log.trace("After toEntity [{}]",entity);
     Employee savedEmployee = employeeRepository.save(entity);
