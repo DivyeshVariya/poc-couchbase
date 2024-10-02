@@ -36,7 +36,7 @@ public class EmployeeFilter extends DefaultFilter {
 
   private void addFirstNameCriteria(Query query) {
     log.trace("Inside addFirstNameCriteria Method.");
-    if (Strings.isNullOrEmpty(firstName)) {
+    if (!Strings.isNullOrEmpty(firstName)) {
       query.addCriteria(QueryCriteria.where("firstName").regex(firstName));
       log.trace("Firstname criteria added.");
     }
@@ -44,7 +44,7 @@ public class EmployeeFilter extends DefaultFilter {
 
   private void addEmailCriteria(Query query) {
     log.trace("Inside addEmailCriteria Method.");
-    if (Strings.isNullOrEmpty(email)) {
+    if (!Strings.isNullOrEmpty(email)) {
       query.addCriteria(QueryCriteria
               .where("email")
               .is(email));
@@ -54,7 +54,7 @@ public class EmployeeFilter extends DefaultFilter {
 
   private void addPhoneNumberCriteria(Query query) {
     log.trace("Inside addPhoneNumberCriteria Method.");
-    if (Strings.isNullOrEmpty(phoneNumber)) {
+    if (!Strings.isNullOrEmpty(phoneNumber)) {
       query.addCriteria(QueryCriteria
               .where("phoneNumber")
               .is(phoneNumber));
@@ -64,9 +64,9 @@ public class EmployeeFilter extends DefaultFilter {
 
   private void addEmployeeIdCriteria(Query query) {
     log.trace("Inside addEmployeeIdCriteria Method.");
-    if (Strings.isNullOrEmpty(employeeId)) {
+    if (!Strings.isNullOrEmpty(employeeId)) {
       query.addCriteria(QueryCriteria
-              .where("meta.id")
+              .where("META().id")
               .is(employeeId));
       log.trace("EmployeeId criteria added.");
     }
