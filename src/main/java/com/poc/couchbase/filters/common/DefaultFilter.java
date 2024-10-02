@@ -26,13 +26,9 @@ public class DefaultFilter implements PageBuilder, QueryBuilder {
   protected int page;
   protected int pageSize;
   protected String sortBy;
-  protected String fields;
   protected Map<String, Object> otherCriteria;
   private Date startDate;
   private Date endDate;
-  //  private Double longitude;
-//  private Double latitude;
-//  private String countryId;
 
   @Override
   public Pageable initPage() {
@@ -51,33 +47,11 @@ public class DefaultFilter implements PageBuilder, QueryBuilder {
     addDeletedCriteria(query);
     addInactiveCriteria(query);
     addSorting(query);
-    addSelectedFields(query);
     addStartDateAndEndDate(query);
-//    addLocationCriteria(query);
-//    addCountryIdCriteria(query);
 
     log.trace("Query : {}", query);
     return query;
   }
-
-//  private void addCountryIdCriteria(Query query) {
-//    if (!Strings.isNullOrEmpty(countryId)) {
-//      query.addCriteria(QueryCriteria
-//              .where("countryId")
-//              .is(countryId));
-//    }
-//  }
-
-//  private void addLocationCriteria(Query query) {
-//    log.info("Inside addLocationCriteria method. long : {} lat : {}", longitude, latitude);
-//    if (longitude!=null && latitude!=null) {
-//      query.addCriteria(
-//              QueryCriteria
-//                      .where("location.coordinates")
-//                      .nearSphere(new Point(longitude, latitude)));
-//    }
-//    log.info("query : {}", query);
-//  }
 
   private void addStartDateAndEndDate(Query query) {
     if (startDate!=null && endDate!=null) {
@@ -119,14 +93,5 @@ public class DefaultFilter implements PageBuilder, QueryBuilder {
       sortBy = DEFAULT_SORT_ORDER;
     }
     query.with(CommonHelper.sortBy(sortBy));
-  }
-
-  private void addSelectedFields(Query query) {
-    if (!Strings.isNullOrEmpty(fields)) {
-      String[] selectedFields = fields.split(",");
-      if (selectedFields.length > 0) {
-        query.distinct(selectedFields);
-      }
-    }
   }
 }

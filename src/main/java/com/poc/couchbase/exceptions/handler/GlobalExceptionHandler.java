@@ -15,12 +15,12 @@ import org.springframework.web.method.HandlerMethod;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.poc.couchbase.constants.Constants.CLASS;
+import static com.poc.couchbase.constants.Constants.METHOD;
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-  private static final String CLASS = "class";
-  private static final String METHOD = "method";
 
   @ExceptionHandler(EmployeeNotFound.class)
   public ResponseEntity<Response> handleEmployeeNotFoundException(EmployeeNotFound ex, HandlerMethod handlerMethod) {

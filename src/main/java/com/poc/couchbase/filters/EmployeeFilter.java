@@ -1,5 +1,6 @@
 package com.poc.couchbase.filters;
 
+import com.couchbase.client.core.deps.com.google.common.base.Strings;
 import com.poc.couchbase.filters.common.DefaultFilter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.couchbase.core.query.Query;
 import org.springframework.data.couchbase.core.query.QueryCriteria;
 
+
 @Slf4j
 @Data
 @NoArgsConstructor
@@ -16,48 +18,43 @@ import org.springframework.data.couchbase.core.query.QueryCriteria;
 @EqualsAndHashCode(callSuper = true)
 public class EmployeeFilter extends DefaultFilter {
   private String employeeId;
-  private String mobile;
+  private String email;
   private String phoneNumber;
-  private String fullName;
+  private String firstName;
 
   @Override
   public Query toQuery() {
     Query query = super.toQuery();
 
     addEmployeeIdCriteria(query);
-    addFullNameCriteria(query);
-    addMobileCriteria(query);
+    addFirstNameCriteria(query);
+    addEmailCriteria(query);
     addPhoneNumberCriteria(query);
 
     return query;
   }
 
-  private void addFullNameCriteria(Query query) {
-    log.trace("Inside addFullNameCriteria Method.");
-    if (fullName!=null) {
-      query.addCriteria(QueryCriteria
-              .where("firstName")
-              .regex(fullName));
-      query.addCriteria(QueryCriteria
-              .where("lastName")
-              .regex(fullName));
-      log.trace("Fullname criteria added.");
+  private void addFirstNameCriteria(Query query) {
+    log.trace("Inside addFirstNameCriteria Method.");
+    if (Strings.isNullOrEmpty(firstName)) {
+      query.addCriteria(QueryCriteria.where("firstName").regex(firstName));
+      log.trace("Firstname criteria added.");
     }
   }
 
-  private void addMobileCriteria(Query query) {
-    log.trace("Inside addMobileCriteria Method.");
-    if (mobile!=null) {
+  private void addEmailCriteria(Query query) {
+    log.trace("Inside addEmailCriteria Method.");
+    if (Strings.isNullOrEmpty(email)) {
       query.addCriteria(QueryCriteria
-              .where("mobile")
-              .is(mobile));
-      log.trace("Mobile criteria added.");
+              .where("email")
+              .is(email));
+      log.trace("Email criteria added.");
     }
   }
 
   private void addPhoneNumberCriteria(Query query) {
     log.trace("Inside addPhoneNumberCriteria Method.");
-    if (phoneNumber!=null) {
+    if (Strings.isNullOrEmpty(phoneNumber)) {
       query.addCriteria(QueryCriteria
               .where("phoneNumber")
               .is(phoneNumber));
@@ -67,9 +64,9 @@ public class EmployeeFilter extends DefaultFilter {
 
   private void addEmployeeIdCriteria(Query query) {
     log.trace("Inside addEmployeeIdCriteria Method.");
-    if (employeeId!=null) {
+    if (Strings.isNullOrEmpty(employeeId)) {
       query.addCriteria(QueryCriteria
-              .where("id")
+              .where("meta.id")
               .is(employeeId));
       log.trace("EmployeeId criteria added.");
     }
