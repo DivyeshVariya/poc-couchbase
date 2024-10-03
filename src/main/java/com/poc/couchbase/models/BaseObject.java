@@ -3,10 +3,7 @@ package com.poc.couchbase.models;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.*;
 import org.springframework.data.couchbase.core.index.QueryIndexed;
 
 import java.util.Date;
@@ -67,4 +64,11 @@ public class BaseObject {
    * purpose only.
    */
   private Map<String, Object> metaInfo;
+
+  /**
+   *  The version of the object.
+   * The entity class must have an @Version Long property to hold the CAS value of the document.
+   */
+  @Version
+  private Long version;
 }

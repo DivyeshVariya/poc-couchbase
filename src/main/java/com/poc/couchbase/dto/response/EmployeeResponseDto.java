@@ -22,4 +22,5 @@ public class EmployeeResponseDto extends BaseObject {
   private String department;
   private String position;
   private Integer salary;
+  private AddressResponseDto address;
 }

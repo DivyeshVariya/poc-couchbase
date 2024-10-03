@@ -1,8 +1,9 @@
 package com.poc.couchbase.exceptions.handler;
 
 import com.poc.couchbase.dto.response.Response;
+import com.poc.couchbase.exceptions.AddressNotFoundException;
 import com.poc.couchbase.exceptions.EmployeeAlreadyCreatedException;
-import com.poc.couchbase.exceptions.EmployeeNotFound;
+import com.poc.couchbase.exceptions.EmployeeNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +23,30 @@ import static com.poc.couchbase.constants.Constants.METHOD;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-  @ExceptionHandler(EmployeeNotFound.class)
-  public ResponseEntity<Response> handleEmployeeNotFoundException(EmployeeNotFound ex, HandlerMethod handlerMethod) {
+  @ExceptionHandler(EmployeeNotFoundException.class)
+  public ResponseEntity<Response> handleEmployeeNotFoundException(EmployeeNotFoundException ex, HandlerMethod handlerMethod) {
     log.error("Employee not found: {}", ex.getMessage());
+    return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body(
+                    Response
+                            .builder()
+                            .status(HttpStatus.NOT_FOUND)
+                            .statusCode(HttpStatus.NOT_FOUND.value())
+                            .message(ex.getMessage())
+                            .data(Map.of(CLASS,
+                                    handlerMethod
+                                            .getBeanType()
+                                            .getSimpleName(), METHOD,
+                                    handlerMethod
+                                            .getMethod()
+                                            .getName()))
+                            .build());
+  }
+
+  @ExceptionHandler(AddressNotFoundException.class)
+  public ResponseEntity<Response> handleAddressNotFoundException(AddressNotFoundException ex, HandlerMethod handlerMethod) {
+    log.error("Address not found: {}", ex.getMessage());
     return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
             .body(

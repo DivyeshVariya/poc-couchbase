@@ -4,9 +4,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration;
 import org.springframework.data.couchbase.repository.auditing.EnableCouchbaseAuditing;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableCouchbaseAuditing
+@EnableTransactionManagement
 public class CouchbaseServerConfig extends AbstractCouchbaseConfiguration {
   @Override
   public String getConnectionString() {
@@ -28,10 +30,15 @@ public class CouchbaseServerConfig extends AbstractCouchbaseConfiguration {
     return "poc-couchbase";
   }
 
+  // optionally specify the scope in the Configuration
+  @Override
+  protected String getScopeName() {
+    return "dev";
+  }
+
   // this creates the auditor aware bean that will feed the annotations
   @Bean
   public NaiveAuditorAware testAuditorAware() {
     return new NaiveAuditorAware();
   }
-
 }

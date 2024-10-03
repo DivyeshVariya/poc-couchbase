@@ -5,54 +5,36 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import nonapi.io.github.classgraph.json.Id;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.couchbase.core.mapping.Document;
 import org.springframework.data.couchbase.core.mapping.Field;
 import org.springframework.data.couchbase.core.mapping.id.GeneratedValue;
+import org.springframework.data.couchbase.core.mapping.id.GenerationStrategy;
 import org.springframework.data.couchbase.repository.Collection;
 import org.springframework.data.couchbase.repository.Scope;
 
-import java.util.Date;
-
-import static org.springframework.data.couchbase.core.mapping.id.GenerationStrategy.UNIQUE;
 @Scope("dev")
-@Collection("employee")
-@Data
+@Collection("address")
+@EqualsAndHashCode(callSuper = true)
 @Document
+@Data
 @SuperBuilder
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class Employee extends BaseObject {
+public class Address extends BaseObject{
+
   @Id
-  @GeneratedValue(strategy = UNIQUE)
+  @GeneratedValue(strategy = GenerationStrategy.UNIQUE)
   private String id;
-  @Field
   @NotNull
-  private String firstName;
   @Field
+  private String addressLine1;
   @NotNull
-  private String lastName;
   @Field
+  private String addressLine2;
   @NotNull
-  private Date dob;
-
   @Field
+  private String city;
   @NotNull
-  private String email;
   @Field
-  @NotNull
-  private String phoneNumber;
-
-  @Field
-  @NotNull
-  private String department;
-  @Field
-  @NotNull
-  private String position;
-  @Field
-  @NotNull
-  private Integer salary;
-  @Field
-  @NotNull
-  private String addressId;
+  private String pinCode;
 }
