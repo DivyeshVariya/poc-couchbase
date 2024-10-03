@@ -1,9 +1,11 @@
 package com.poc.couchbase.config;
 
+import lombok.Setter;
 import org.springframework.data.domain.AuditorAware;
 
 import java.util.Optional;
 
+@Setter
 public class NaiveAuditorAware implements AuditorAware<String> {
   private String auditor = "anonymous";
 
@@ -12,7 +14,4 @@ public class NaiveAuditorAware implements AuditorAware<String> {
     return auditor.describeConstable();
   }
 
-  public void setAuditor(String auditor) {
-    this.auditor = auditor;
-  }
 }
