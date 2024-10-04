@@ -22,13 +22,14 @@ public class CouchbaseExecutorService {
     this.couchbaseTemplate = couchbaseTemplate;
   }
 
-  public <T> List<T> find(String source, Query query, Class<T> t) {
+  public <T> List<T> find(String source, Query query, Class<T> t,String scope) {
     log.trace("Inside find method.");
     log.trace("Source: [{}] , Query: [{}], Class: [{}]", source, query.toString(), t.getSimpleName());
     source = setSourceIfNull(source);
     long startTime = System.currentTimeMillis();
     List<T> content = couchbaseTemplate
             .findByQuery(t)
+            .inScope(scope)
             .matching(query)
             .all();
     calculateResponseTime(startTime, source);
@@ -74,7 +75,7 @@ public class CouchbaseExecutorService {
     return result;
   }
 
-  public <T> Page<T> findByPage(String source, Query query, Class<T> t, int pageSize, int page) {
+  public <T> Page<T> findByPage(String source, Query query, Class<T> t, int pageSize, int page,String scope) {
     log.trace("Inside findByPage method.");
     log.trace(
             "Source: [{}] , Query: [{}], Class: [{}], PageSize : [{}], Page : [{}]",
@@ -94,6 +95,7 @@ public class CouchbaseExecutorService {
     long startTime = System.currentTimeMillis();
     List<T> content = couchbaseTemplate
             .findByQuery(t)
+            .inScope(scope)
             .matching(query)
             .all();
     calculateResponseTime(startTime, source);

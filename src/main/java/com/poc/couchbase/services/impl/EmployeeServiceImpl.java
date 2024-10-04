@@ -15,6 +15,7 @@ import com.poc.couchbase.services.AddressService;
 import com.poc.couchbase.services.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,8 @@ import static com.poc.couchbase.constants.Constants.ID;
 @Slf4j
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
+  @Value("${couchbase.scope}")
+  private String scope;
 
   private final EmployeeRepository employeeRepository;
   private final EmployeeMapper employeeMapper;
@@ -64,7 +67,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     Employee entity = employeeMapper.toEntity(createEmployeeDto);
     entity.setAddressId(addressResponseDto.getId());
     log.trace("After toEntity [{}]", entity);
-    Employee savedEmployee = employeeRepository.withScope("dev").save(entity);
+    Employee savedEmployee = employeeRepository.withScope(scope).save(entity);
     log.trace("After save [{}]", savedEmployee);
     EmployeeResponseDto responseDto = employeeMapper.toDto(savedEmployee);
     log.trace("After toDto [{}]", responseDto);
@@ -75,7 +78,7 @@ public class EmployeeServiceImpl implements EmployeeService {
   @Transactional
   public EmployeeResponseDto findEmployeeById(String id) {
     log.trace("Inside findEmployeeById Method.");
-    Optional<Employee> entity = employeeRepository.withScope("dev").findById(id);
+    Optional<Employee> entity = employeeRepository.withScope(scope).findById(id);
     if (entity.isEmpty()) {
       throw new EmployeeNotFoundException(String.format("Employee with [%s] id not exist", id));
     }
@@ -88,7 +91,7 @@ public class EmployeeServiceImpl implements EmployeeService {
   @Transactional
   public Map<String, Object> removeEmployeeById(String id) {
     log.trace("Inside removeEmployeeById Method.");
-    Optional<Employee> entity = employeeRepository.withScope("dev").findById(id);
+    Optional<Employee> entity = employeeRepository.withScope(scope).findById(id);
     if (entity.isEmpty()) {
       throw new EmployeeNotFoundException(String.format("Employee with [%s] id not exist", id));
     }
@@ -108,7 +111,7 @@ public class EmployeeServiceImpl implements EmployeeService {
   @Transactional
   public EmployeeResponseDto updateEmployee(UpdateEmployeeDto updateEmployeeDto) {
     log.trace("Inside updateEmployee Method.");
-    Optional<Employee> entity = employeeRepository.withScope("dev").findById(updateEmployeeDto.getId());
+    Optional<Employee> entity = employeeRepository.withScope(scope).findById(updateEmployeeDto.getId());
     if (entity.isEmpty()) {
       throw new EmployeeNotFoundException(String.format("Employee with [%s] id not exist", updateEmployeeDto.getId()));
     }
@@ -124,7 +127,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     log.trace("Inside getAllEmployees Method.");
 
     log.trace("Query [{}]", filter.toQuery());
-    List<Employee> getAllEmployees = couchbaseExecutorService.find("getAllEmployees", filter.toQuery(), Employee.class);
+    List<Employee> getAllEmployees = couchbaseExecutorService.find("getAllEmployees", filter.toQuery(),
+            Employee.class,scope);
 
     log.trace("[{}] employees found", getAllEmployees.size());
     return getAllEmployees
@@ -141,7 +145,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     log.trace("Query [{}]", filter.toQuery());
     Page<Employee> getAllEmployees =
             couchbaseExecutorService.findByPage("getAllEmployeesWithPageAndPageSize", filter.toQuery(),
-                    Employee.class, filter.getPageSize(), filter.getPage());
+                    Employee.class, filter.getPageSize(), filter.getPage(),scope);
 
     log.trace("[{}] employees found", getAllEmployees.getTotalElements());
 

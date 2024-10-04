@@ -9,6 +9,7 @@ import com.poc.couchbase.repository.AddressRepository;
 import com.poc.couchbase.services.AddressService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,8 @@ import static com.poc.couchbase.constants.Constants.ID;
 @Slf4j
 @Service
 public class AddressServiceImpl implements AddressService {
+  @Value("${couchbase.scope}")
+  private String scope;
 
   private final AddressRepository addressRepository;
   private final AddressMapper addressMapper;
@@ -39,7 +42,7 @@ public class AddressServiceImpl implements AddressService {
     log.trace("Input Address: [{}]", createAddressDto);
     Address entity = addressMapper.toEntity(createAddressDto);
     log.trace("After Mapping to Entity: [{}]", entity);
-    Address saved = addressRepository.withScope("dev").save(entity);
+    Address saved = addressRepository.withScope(scope).save(entity);
     log.trace("After Save: [{}]", saved);
     return addressMapper.toDto(saved);
   }
@@ -48,7 +51,7 @@ public class AddressServiceImpl implements AddressService {
   @Transactional(readOnly = true)
   public AddressResponseDto fetchById(final String id) {
     log.trace("Inside fetchById Method.");
-    Optional<Address> address = addressRepository.withScope("dev").findById(id);
+    Optional<Address> address = addressRepository.withScope(scope).findById(id);
     if (address.isEmpty()) {
       throw new AddressNotFoundException("Address not found with id: " + id);
     }
@@ -59,7 +62,7 @@ public class AddressServiceImpl implements AddressService {
   @Transactional
   public Map<String, Object> deleteById(final String id) {
     log.trace("Inside deleteById Method.");
-    Optional<Address> address = addressRepository.withScope("dev").findById(id);
+    Optional<Address> address = addressRepository.withScope(scope).findById(id);
     if (address.isEmpty()) {
       throw new AddressNotFoundException("Address not found with id: " + id);
     }

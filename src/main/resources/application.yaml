@@ -17,4 +17,10 @@ logging:
     com:
       poc:
         couchbase: TRACE
+couchbase:
+  connection-string: couchbase://localhost
+  username: root
+  password: roooot
+  bucket-name: poc-couchbase
+  scope: dev
 

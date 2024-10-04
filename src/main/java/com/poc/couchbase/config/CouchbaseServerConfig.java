@@ -1,5 +1,6 @@
 package com.poc.couchbase.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration;
@@ -10,30 +11,41 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableCouchbaseAuditing
 @EnableTransactionManagement
 public class CouchbaseServerConfig extends AbstractCouchbaseConfiguration {
+  @Value("${couchbase.connection-string}")
+  private String connectionString;
+  @Value("${couchbase.username}")
+  private String username;
+  @Value("${couchbase.password}")
+  private String password;
+  @Value("${couchbase.bucket-name}")
+  private String bucketName;
+  @Value("${couchbase.scope}")
+  private String scope;
+
   @Override
   public String getConnectionString() {
-    return "couchbase://localhost";
+    return connectionString;
   }
 
   @Override
   public String getUserName() {
-    return "root";
+    return username;
   }
 
   @Override
   public String getPassword() {
-    return "roooot";
+    return password;
   }
 
   @Override
   public String getBucketName() {
-    return "poc-couchbase";
+    return bucketName;
   }
 
   // optionally specify the scope in the Configuration
   @Override
   protected String getScopeName() {
-    return "dev";
+    return scope;
   }
 
   // this creates the auditor aware bean that will feed the annotations
